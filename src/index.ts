@@ -2,22 +2,19 @@ import "reflect-metadata";
 import {createConnection} from "typeorm";
 import express, { json } from 'express'
 import cookieParser from 'cookie-parser'
-import usersRouter from './routes/usersRouter.js'
-import catalogRouter from './routes/catalogRouter.js'
-import pizzeriasRouter from './routes/pizzeriaRouter.js'
-import ordersRouter from './routes/ordersRouter.js'
-import * as dotenv from 'dotenv'
-dotenv.config({ path: './.env' })
-
-const PORT = process.env.PORT || 5000
+import usersRouter from './routes/usersRouter'
+import catalogRouter from './routes/catalogRouter'
+import pizzeriasRouter from './routes/pizzeriaRouter'
+import ordersRouter from './routes/ordersRouter'
+import * as config from './config/config'
+const PORT = config.default.PORT
 const app = express()
-
 app.use(json())
 app.use(cookieParser())
-app.use('/users', usersRouter)
-app.use('/catalog', catalogRouter)
-app.use('/pizzerias', pizzeriasRouter)
-app.use('/orders', ordersRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/catalog', catalogRouter)
+app.use('/api/pizzerias', pizzeriasRouter)
+app.use('/api/orders', ordersRouter)
 
 createConnection()
     .then(async () => {

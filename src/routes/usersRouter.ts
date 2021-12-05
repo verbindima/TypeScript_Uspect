@@ -1,9 +1,9 @@
-import Router from 'express'
-import controllers from '../controllers/userController.js'
-import authMiddleware from '../middlewares/authMiddleware.js'
+import * as express from 'express'
+import controllers from '../controllers/userController'
+import authMiddleware from '../middlewares/authMiddleware'
 const { register, login, logout, updateUser, getUser, getOrders } = controllers
 
-const router = new Router()
+const router = express.Router()
 
 router.post(
   '/register',
