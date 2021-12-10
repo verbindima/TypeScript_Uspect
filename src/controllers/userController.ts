@@ -19,7 +19,10 @@ class userController {
             birthday
         )
         await userData.user.save()
-        
+        res.cookie('refreshToken', userData.refreshToken, {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        })
         return res
           .status(200)
           .json({ userData, message: 'Пользователь успешно зарегистрирован' })
@@ -40,13 +43,17 @@ class userController {
       res.status(401).json({ message: 'login Error' })  
      }
     }
-    async logout(req: Request, res: Response) {
-      const user =  req.body.email
-      return res.status(200).json( {user})
-    }
     async updateUser(req: Request, res: Response) {
-      const user =  req.body.email
-      return res.status(200).json( {user})
+      try{
+        const { refreshToken } = req.body
+        await userService.updateUser(refreshToken, req.body)
+  
+        res.status(200).json( { message: 'Данные обновлены'})
+      }
+      catch (e) {
+        res.status(400).json({ message: 'updateUser Error' })
+      }
+      
     }
     async getUser(req: Request, res: Response) {
       const user =  req.body.email
