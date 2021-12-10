@@ -30,8 +30,15 @@ class userController {
     }
    
     async login(req: Request, res: Response) {
-      const user =  req.body.email
-      return res.status(200).json( {user})
+      try {
+        const { email, password } =  req.body
+        const userData = await userService.login(email, password)
+        return res.status(200).json( {userData})
+      }
+     catch (e) {
+      console.log(e)
+      res.status(401).json({ message: 'login Error' })  
+     }
     }
     async logout(req: Request, res: Response) {
       const user =  req.body.email
