@@ -31,9 +31,10 @@ class UserService {
         birthday: us_date
     })
     await user.save()
-   
+    const tokens = tokenService.generateTokens(user.id, user.isAdmin)
+    await tokenService.saveToken(user.id, tokens.refreshToken)
 
-    return { user }
+    return { ...tokens, user }
   }
   async login(
     email: string, 
@@ -48,7 +49,6 @@ class UserService {
       throw new Error('Введен неправильный пароль')
     }
     const tokens = tokenService.generateTokens(user.id, user.isAdmin)
-    console.log(user.id, tokens.refreshToken)
     await tokenService.saveToken(user.id, tokens.refreshToken)
 
     return {...tokens, user }
