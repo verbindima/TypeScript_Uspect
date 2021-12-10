@@ -8,6 +8,10 @@ const extractCookieFromRequest = (req: Request) => {
       const { accessToken } = req.cookies
       return accessToken;
     }
+    if (req.cookies.refreshToken) {
+      const { refreshToken } = req.cookies
+      return refreshToken;
+    }
     return null;
   };
   export{
