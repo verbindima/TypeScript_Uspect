@@ -6,10 +6,12 @@ export class Token extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ nullable: true })
+    userId: number;
+
     @ManyToOne(type => User, {
         nullable: false
     })
-
     @JoinColumn({
         name: 'userId'
     })
