@@ -55,10 +55,10 @@ class UserService {
   }
   async updateUser(refreshToken:string, userChanges: User) {
     const token = await tokenService.findToken(refreshToken)
-    if (!token || !token.user) {
+    if (!token || !token.userId) {
       throw new Error('Неправильный токен')
     }
-    const userUpdated = await User.update(token.user, userChanges)
+    const userUpdated = await User.update(token.userId, userChanges)
     return userUpdated
   }
 

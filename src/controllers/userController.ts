@@ -36,6 +36,10 @@ class userController {
       try {
         const { email, password } =  req.body
         const userData = await userService.login(email, password)
+        res.cookie('refreshToken', userData.refreshToken, {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        })
         return res.status(200).json( {userData})
       }
      catch (e) {
@@ -48,11 +52,13 @@ class userController {
 
 
         const { refreshToken } = req.cookies
-        await userService.updateUser(refreshToken, req.body)
+        
+        const updated = await userService.updateUser(refreshToken, req.body)
   
-        res.status(200).json( { message: 'Данные обновлены'})
+        res.status(200).json( {updated, message: 'Данные обновлены'})
       }
       catch (e) {
+        console.log(e)
         res.status(400).json({ message: 'updateUser Error' })
       }
       

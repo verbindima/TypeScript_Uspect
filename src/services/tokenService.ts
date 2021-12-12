@@ -38,8 +38,6 @@ class TokenService {
   
   async saveToken(user_Id:number, refreshToken:string):Promise<any> {
     const tokenData = await Token.findOne({ where: { user: user_Id } })
-    //const tokenData = await Token.findOne({  })
-    console.log(tokenData)
     if (tokenData) {
       tokenData.refreshToken = refreshToken
       return tokenData.save()
@@ -50,8 +48,7 @@ class TokenService {
             id: user_Id
             }
     })
-    console.log(token)
-    await token.save()
+   await token.save()
     return token
   }
   async removeToken(refreshToken:string) {
