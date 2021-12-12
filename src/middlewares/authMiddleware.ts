@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import * as config from '../config/config'
+import config from '../config/config'
 import { extractCookieFromRequest } from '../utilities/apiUtilities'
 
 export default function (onlyAdmin = false) {
@@ -14,14 +14,14 @@ export default function (onlyAdmin = false) {
         if (!authorizationHeader) {
           return res.status(401).json({ message: 'Пользователь не авторизован' })
         }
-      const accessToken = authorizationHeader  //.split(' ')[1] //|| req.cookies
-      if (!accessToken) {
+      const refreshToken = authorizationHeader  //.split(' ')[1] //|| req.cookies
+      if (!refreshToken) {
          res.status(401).json({ message: 'Пользователь не авторизован' })
          return next(false)
       }
 
       
-        const decodedData = jwt.verify(accessToken, config.default.jwtAccessKey)
+        const decodedData = jwt.verify(refreshToken, config.jwtRefreshKey)
         const isAdmin = decodedData
         if (onlyAdmin) {
           if (!isAdmin) {
