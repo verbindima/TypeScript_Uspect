@@ -61,6 +61,15 @@ class UserService {
     const userUpdated = await User.update(token.userId, userChanges)
     return userUpdated
   }
+  async getUser(refreshToken: string) {
+    const token = await tokenService.findToken(refreshToken)
+    if (!token || !token.userId) {
+      throw new Error('Неправильный токен')
+    }
+    const id = token.userId
+    const user = await User.findByIds([id])
+    return user
+  }
 
   
 }

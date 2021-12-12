@@ -64,8 +64,14 @@ class userController {
       
     }
     async getUser(req: Request, res: Response) {
-      const user =  req.body.email
-      return res.status(200).json( {user})
+      try {
+        const { refreshToken } = req.cookies
+        const user = await userService.getUser(refreshToken)
+        res.status(200).json({ user })
+      } catch (e) {
+        console.log(e)
+        res.status(400).json({ message: 'getUser Error' })
+      }
     }
     async getOrders(req: Request, res: Response) {
       const user =  req.body.email
