@@ -1,15 +1,15 @@
 import * as express from 'express'
-//import controllers from '../controllers/orderController.js'
+import controllers from '../controllers/pizzeriaController.js'
 import authMiddleware from '../middlewares/authMiddleware'
-//const { getPizzerias, createPizzeria, getPizzeriaById, updatePizzeriaById, deletePizzeriaById } = controllers
+const { create, get, getOne, updateOne, deleteOne } = controllers
 
 const router = express.Router()
 
-router.get('/') 
-router.post('/', authMiddleware(true)) 
-router.get('/:id')
-router.patch('/:id', authMiddleware(true)) 
-router.delete('/:id', authMiddleware(true)) 
+router.get('/', get) 
+router.post('/', authMiddleware(true), create) 
+router.get('/:id', getOne)
+router.patch('/:id', authMiddleware(true), updateOne) 
+router.delete('/:id', authMiddleware(true), deleteOne) 
 
 
 export default router
