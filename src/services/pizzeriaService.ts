@@ -12,17 +12,17 @@ class PizzeriaService {
     }
     async getPizzerias(city:string,
       limit: number,
-      page: number 
+      offset: number 
       ) {
         if (city === 'none') {
             const pizzerias = await Pizzeria.findAndCount({
-                skip: page, 
+                skip: offset, 
                 take: limit})
             return pizzerias
         }
         const pizzerias = await Pizzeria.findAndCount({
                 where: {city: city},
-                skip: page, 
+                skip: offset, 
                 take: limit})
         return pizzerias
     }

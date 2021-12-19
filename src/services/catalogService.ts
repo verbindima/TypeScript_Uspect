@@ -14,17 +14,17 @@ class CatalogService {
     }
     async getItems(type:string,
       limit: number,
-      page: number 
+      offset: number 
       ) {
         if (type === 'none') {
             const items = await Catalog.findAndCount({
-                skip: page, 
+                skip: offset, 
                 take: limit})
             return items
         }
         const items = await Catalog.findAndCount({
                 where: {type: type},
-                skip: page, 
+                skip: offset, 
                 take: limit})
         return items
     }

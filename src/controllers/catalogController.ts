@@ -3,10 +3,11 @@ import catalogService from "../services/catalogService"
 class catalogController {
     async get(req: Request, res: Response) {
         try {   
-        const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 25;
-        const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 0; 
+        const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
+        const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
         const type = typeof(req.query.type) !== 'undefined' ? String(req.query.type) : 'none';
-        const item = await catalogService.getItems(type, limit, page)
+        const offset = page * limit - limit
+        const item = await catalogService.getItems(type, limit, offset)
         res.status(200).json({item, message: 'Элементы отображены' })
         } catch (e) {
           console.log(e)

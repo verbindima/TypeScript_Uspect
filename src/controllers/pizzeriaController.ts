@@ -3,10 +3,11 @@ import pizzeriaService from "../services/pizzeriaService"
 class PizzeriaController {
     async get(req: Request, res: Response) {
         try {   
-        const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 25;
-        const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 0; 
+        const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
+        const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
         const city = typeof(req.query.city) !== 'undefined' ? String(req.query.city) : 'none';
-        const pizzerias = await pizzeriaService.getPizzerias(city, limit, page)
+        const offset = page * limit - limit
+        const pizzerias = await pizzeriaService.getPizzerias(city, limit, offset)
         res.status(200).json({pizzerias, message: 'Элементы отображены' })
         } catch (e) {
           console.log(e)
