@@ -1,7 +1,6 @@
 import { Token } from '../entity/token.entity'
 import jwt from 'jsonwebtoken'
 import config from '../config/config'
-import { User } from 'entity/user.entity'
 class TokenService {
   generateTokens(id:number, isAdmin:boolean) {
     const payload = {
@@ -36,7 +35,7 @@ class TokenService {
     }
   }
   
-  async saveToken(user_Id:number, refreshToken:string):Promise<any> {
+  async saveToken(user_Id:number, refreshToken:string) {
     const tokenData = await Token.findOne({ where: { user: user_Id } })
     if (tokenData) {
       tokenData.refreshToken = refreshToken
