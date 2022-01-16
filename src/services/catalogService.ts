@@ -1,4 +1,3 @@
-import { ItemList } from "entity/itemList.entity"
 import { Catalog } from "../entity/catalog.entity"
 
 class CatalogService {
@@ -16,7 +15,7 @@ class CatalogService {
       limit: number,
       offset: number 
       ) {
-        if (type === 'none') {
+        if (type === 'All') {
             const items = await Catalog.findAndCount({
                 skip: offset, 
                 take: limit})
