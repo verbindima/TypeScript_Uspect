@@ -5,13 +5,13 @@ import {v4} from 'uuid'
 const uuid = v4()
 
 const extractCookieFromRequest = (req: Request) => {
-    if (req.headers.authorization) {
-      const accessToken = req.headers.authorization
-      return accessToken;
+    if (req.cookies.accessToken) {
+      const { accessToken } = req.cookies
+      return { accessToken };
     }
     if (req.cookies.refreshToken) {
       const { refreshToken } = req.cookies
-      return refreshToken;
+      return { refreshToken };
     }
     return null;
   };

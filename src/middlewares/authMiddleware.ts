@@ -11,26 +11,31 @@ export default function (onlyAdmin = false) {
     }
     try {
       const authorizationHeader = extractCookieFromRequest(req);
-        if (!authorizationHeader) {
-          return res.status(401).json({ message: 'Пользователь не авторизован' })
-        }
-      const refreshToken = authorizationHeader  //.split(' ')[1] //|| req.cookies
-      if (!refreshToken) {
-         res.status(401).json({ message: 'Пользователь не авторизован' })
-         return next(false)
-      }
 
-      
-        const decodedData = jwt.verify(refreshToken, config.jwtRefreshKey)
-        const isAdmin = decodedData
+      if (authorizationHeader && authorizationHeader.accessToken) {
+        const accessToken = authorizationHeader.accessToken
+        const decodedData = jwt.verify(accessToken, config.jwtAccessKey)
+        
+        const isAdmin =  (Object.values(decodedData))[1]
+        
         if (onlyAdmin) {
-          if (!isAdmin) {
+          if (isAdmin[2]) {
             return res.status(403).json({ message: 'В доступе отказано' })
           }
         }
+        next()
+      } else if (authorizationHeader && authorizationHeader.refreshToken) {
+        const refreshToken = authorizationHeader.refreshToken
+        const decodedData = jwt.verify(refreshToken, config.jwtRefreshKey)
+        const isAdmin = (Object.values(decodedData))[1]
+        if (onlyAdmin) {
+          if (isAdmin) {
+            return res.status(403).json({ message: 'В доступе отказано' })
+          }
+        }
+        next()
+      }
       
-          
-      next()
     } catch (e) {
       console.log(e)
       return res.status(401).json({ message: 'Пользователь не авторизован' })

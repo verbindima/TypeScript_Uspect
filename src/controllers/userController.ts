@@ -19,8 +19,12 @@ class userController {
             birthday
         )
         await userData.user.save()
+        res.cookie('accessToken', userData.accessToken, {
+          maxAge:  60 * 60 * 1000,
+          httpOnly: true,
+        })
         res.cookie('refreshToken', userData.refreshToken, {
-          maxAge: 30 * 24 * 60 * 60 * 1000,
+          maxAge: 14 * 24 * 60 * 60 * 1000,
           httpOnly: true,
         })
         return res
@@ -36,6 +40,10 @@ class userController {
       try {
         const { email, password } =  req.body
         const userData = await userService.login(email, password)
+        res.cookie('accessToken', userData.accessToken, {
+          maxAge:  60 * 60 * 1000,
+          httpOnly: true,
+        })
         res.cookie('refreshToken', userData.refreshToken, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
