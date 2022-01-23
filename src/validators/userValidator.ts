@@ -11,7 +11,7 @@ export default {
             city: Joi.string().required().default('Moscow'),
             address: Joi.string().required(),
             phone: Joi.string().min(3).required(),
-            birthday: Joi.date().required(),
+            birthday: Joi.string().required(),
           }).unknown(),
         }),
       
