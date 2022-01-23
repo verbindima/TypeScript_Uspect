@@ -35,17 +35,11 @@ export default {
           }).unknown(),
         }),       
           getOrders : celebrate({
-          [Segments.BODY]: Joi.object().keys({
-            email: Joi.string().email(),
-            password: Joi.string().min(3).max(255),
-            isAdmin: Joi.boolean().default(false),
-            name: Joi.string(),
-            surname: Joi.string(),
-            city: Joi.string().default('Moscow'),
-            address: Joi.string(),
-            phone: Joi.string().min(3),
-            birthday: Joi.date(),
-          }).unknown(),
+          [Segments.QUERY]: {
+            limit: Joi.number().min(1).default(10),
+            page: Joi.number().min(1).default(1),
+            userId: Joi.number().required()
+          },
         })
       }
 

@@ -82,8 +82,13 @@ class userController {
       }
     }
     async getOrders(req: Request, res: Response) {
-      const user =  req.body.email
-      return res.status(200).json( {user})
+      const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
+      const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
+      const userId = Number(req.query.userId)
+      const offset = page * limit - limit
+
+      const orders = await userService.getOrders(userId, limit, offset)
+      return res.status(200).json( {orders})
     }
 }
 

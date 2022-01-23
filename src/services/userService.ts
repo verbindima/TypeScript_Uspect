@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { User } from '../entity/user.entity'
 import tokenService from './tokenService'
+import { Order } from  '../entity/order.entity'
 class UserService {
   async register(
     email: string, 
@@ -70,6 +71,17 @@ class UserService {
     const user = await User.findByIds([id])
     return user
   }
+  
+  async getOrders(userId:number,
+    limit: number,
+    offset: number ) {
+      const orders = await Order.findAndCount({
+        where: {user: userId},
+        skip: offset, 
+        take: limit})
+        
+    return orders
+    }
 
   
 }
