@@ -3,6 +3,7 @@ import { Order } from "../entity/order.entity"
 import { Catalog } from "../entity/catalog.entity"
 import { Pizzeria } from "../entity/pizzeria.entity"
 import { User } from "../entity/user.entity"
+import mailService from "./mailService"
 class OrderService {
     async createOrder(
       userId: number,
@@ -18,11 +19,12 @@ class OrderService {
                 where: {id: catalog}
            })           
            if (item ){
-              acc.push({item: item.title, type: item.type, price: item.price * count, count})
+              acc.push({item: item.title, type: item.type, price: item.price * count, count, img: item.picture})
            }
            
             return acc
-          }, Promise.resolve([{item: "", type: "", price: 0, count: 0}]))
+          }, Promise.resolve([{item: "", type: "", price: 0, count: 0, img: ''}]))
+          total.shift()
           const priceOrderWithoutDiscount = total.reduce((prev,next) => prev + next.price, 0)
           const isCola = total.reduce((prev,next) =>  next.item === 'Coka-Cola'? true : false, false)
           pizzaCount = total.reduce((prev, next) => {
@@ -58,9 +60,10 @@ class OrderService {
             where: {id: order.pizzeria.id}
           })
           const client = await User.findOne({
-            select: ['name', 'surname'],
+            select: ['email', 'name', 'surname'],
             where: {id: order.user.id}
           })
+
           if (client && pizzeria) {
           const clientName = `${client.name} ${client.surname}`
           const fullOrder = {
@@ -69,7 +72,10 @@ class OrderService {
             pizzeria: pizzeria.title,
             summ: order.summ,
             discount: order.discount,
+            createdAt: order.createdAt,
+            itemList: total
           }
+          await mailService.sendOrderMail(client.email, fullOrder, itemList, client)
           return fullOrder
           }
           
