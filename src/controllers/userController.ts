@@ -1,9 +1,9 @@
 import userService from '../services/userService'
-import  { Request, Response } from 'express'
+import  { NextFunction, Request, Response } from 'express'
 
 
 class userController {
-    async register(req: Request, res: Response) {
+    async register(req: Request, res: Response, next: NextFunction) {
       try {
         
         const { email, password, isAdmin, name, surname, city, address, phone, birthday } = req.body
@@ -31,12 +31,11 @@ class userController {
           .status(200)
           .json({ userData, message: 'Пользователь успешно зарегистрирован' })
       } catch (e) {
-        console.log(e)
-        res.status(401).json({ message: 'registration Error' })
+        next(e)
       }
     }
    
-    async login(req: Request, res: Response) {
+    async login(req: Request, res: Response, next: NextFunction) {
       try {
         const { email, password } =  req.body
         const userData = await userService.login(email, password)
@@ -51,11 +50,10 @@ class userController {
         return res.status(200).json( {userData})
       }
      catch (e) {
-      console.log(e)
-      res.status(401).json({ message: 'login Error' })  
+       next(e)
      }
     }
-    async updateUser(req: Request, res: Response) {
+    async updateUser(req: Request, res: Response, next: NextFunction) {
       try{
 
 
@@ -66,29 +64,32 @@ class userController {
         res.status(200).json( {updated, message: 'Данные обновлены'})
       }
       catch (e) {
-        console.log(e)
-        res.status(400).json({ message: 'updateUser Error' })
+        next(e)
       }
       
     }
-    async getUser(req: Request, res: Response) {
+    async getUser(req: Request, res: Response, next: NextFunction) {
       try {
         const { refreshToken } = req.cookies
         const user = await userService.getUser(refreshToken)
         res.status(200).json({ user })
       } catch (e) {
-        console.log(e)
-        res.status(400).json({ message: 'getUser Error' })
+        next(e)
       }
     }
-    async getOrders(req: Request, res: Response) {
-      const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
-      const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
-      const userId = Number(req.query.userId)
-      const offset = page * limit - limit
-
-      const orders = await userService.getOrders(userId, limit, offset)
-      return res.status(200).json( {orders})
+    async getOrders(req: Request, res: Response, next: NextFunction) {
+      try {
+        const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
+        const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
+        const userId = Number(req.query.userId)
+        const offset = page * limit - limit
+  
+        const orders = await userService.getOrders(userId, limit, offset)
+        return res.status(200).json( {orders})
+      }
+     catch (e) {
+       next(e)
+     }
     }
 }
 

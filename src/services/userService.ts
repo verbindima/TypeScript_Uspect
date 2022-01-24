@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import { User } from '../entity/user.entity'
 import tokenService from './tokenService'
 import { Order } from  '../entity/order.entity'
+import ApiError from '../utilities/api-error'
 class UserService {
   async register(
     email: string, 
@@ -15,7 +16,7 @@ class UserService {
     birthday:string) {
     const candidate = await User.findOne({ email })
     if (candidate) {
-      throw new Error('Пользователь с такой почтой уже существует')
+      throw ApiError.BadRequest('Пользователь с такой почтой уже существует')
     }
     const trueDate = birthday.split('.');
     const us_date = trueDate.reverse().join('-');
@@ -43,11 +44,11 @@ class UserService {
   ) {
     const user = await User.findOne({ email })
     if (!user) {
-      throw new Error(`Почта ${email} не зарегистрирована`)
+      throw ApiError.BadRequest(`Почта ${email} не зарегистрирована`)
     }
     const validPassword = bcrypt.compareSync(password, user.password)
     if (!validPassword) {
-      throw new Error('Введен неправильный пароль')
+      throw ApiError.BadRequest('Введен неправильный пароль')
     }
     const tokens = tokenService.generateTokens(user.id, user.isAdmin)
     await tokenService.saveToken(user.id, tokens.refreshToken)
@@ -57,7 +58,7 @@ class UserService {
   async updateUser(refreshToken:string, userChanges: User) {
     const token = await tokenService.findToken(refreshToken)
     if (!token || !token.userId) {
-      throw new Error('Неправильный токен')
+      throw ApiError.BadRequest('Неправильный токен')
     }
     const userUpdated = await User.update(token.userId, userChanges)
     return userUpdated
@@ -65,7 +66,7 @@ class UserService {
   async getUser(refreshToken: string) {
     const token = await tokenService.findToken(refreshToken)
     if (!token || !token.userId) {
-      throw new Error('Неправильный токен')
+      throw ApiError.BadRequest('Неправильный токен')
     }
     const id = token.userId
     const user = await User.findByIds([id])

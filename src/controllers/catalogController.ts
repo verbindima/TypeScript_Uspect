@@ -1,7 +1,7 @@
-import  { Request, Response } from 'express'
+import  { NextFunction, Request, Response } from 'express'
 import catalogService from "../services/catalogService"
 class catalogController {
-    async get(req: Request, res: Response) {
+    async get(req: Request, res: Response, next: NextFunction) {
         try {   
         const limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 10;
         const page = typeof(req.query.page) !== 'undefined' ? Number(req.query.page) : 1; 
@@ -10,11 +10,10 @@ class catalogController {
         const item = await catalogService.getItems(type, limit, offset)
         res.status(200).json({item, message: 'Элементы отображены' })
         } catch (e) {
-          console.log(e)
-          res.status(400).json({ message: 'getItems Error' })
+          next(e)
         }
       }
-      async create(req: Request, res: Response) {
+      async create(req: Request, res: Response, next: NextFunction) {
         try {
           const { title, description, type, price } = req.body
           
@@ -24,39 +23,35 @@ class catalogController {
             res.status(200).json({ message: 'Элемент создан', item })
           }
         } catch (e) {
-          console.log(e)
-          res.status(400).json({ message: 'createItem Error' })
+          next(e)
         }
       }
-      async getOne(req: Request, res: Response) {
+      async getOne(req: Request, res: Response, next: NextFunction) {
         try {   
         const  id  = parseInt(req.params.id)
         const item = await catalogService.getOne(id)
         res.status(200).json({item, message: 'Элемент отображен' })
         } catch (e) {
-          console.log(e)
-          res.status(400).json({ message: 'getOneItem Error' })
+          next(e)
         }
       }
-      async updateOne(req: Request, res: Response) {
+      async updateOne(req: Request, res: Response, next: NextFunction) {
         try {   
         const  id  = parseInt(req.params.id)
         const changes = req.body
         const item = await catalogService.updateOne(id, changes)
         res.status(200).json({item, message: 'Элемент обновлен' })
         } catch (e) {
-          console.log(e)
-          res.status(400).json({ message: 'updateOneItem Error' })
+          next(e)
         }
       }
-      async deleteOne(req: Request, res: Response) {
+      async deleteOne(req: Request, res: Response, next: NextFunction) {
         try {   
         const  id  = parseInt(req.params.id)
         const item = await catalogService.deleteOne(id)
         res.status(200).json({item, message: 'Элемент удален' })
         } catch (e) {
-          console.log(e)
-          res.status(400).json({ message: 'deleteOneItem Error' })
+          next(e)
         }
       }
 }

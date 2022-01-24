@@ -10,6 +10,7 @@ import ordersRouter from './routes/ordersRouter'
 import * as config from './config/config'
 import path from 'path'
 import { errors } from "celebrate";
+import errorMiddleware from "./middlewares/errorMiddleware";
 
 const PORT = config.default.PORT
 const app = express()
@@ -22,8 +23,9 @@ app.use('/api/users', usersRouter)
 app.use('/api/catalog', catalogRouter)
 app.use('/api/pizzerias', pizzeriasRouter)
 app.use('/api/orders', ordersRouter)
-
 app.use(errors())
+app.use(errorMiddleware)
+
 createConnection()
     .then(async () => {
         app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
