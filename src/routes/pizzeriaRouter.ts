@@ -1,5 +1,5 @@
 import * as express from 'express'
-import controllers from '../controllers/pizzeriaController.js'
+import controllers from '../controllers/pizzeriaController'
 import authMiddleware from '../middlewares/authMiddleware'
 import validator from '../validators/pizzeriaValidator'
 

@@ -1,5 +1,5 @@
 import * as express from 'express'
-import controllers from '../controllers/orderController.js'
+import controllers from '../controllers/orderController'
 import authMiddleware from '../middlewares/authMiddleware'
 import validator from '../validators/orderValidator'
 const { getOrders, createOrder, getOrderById, updateOrderById, deleteOrderById } = controllers
