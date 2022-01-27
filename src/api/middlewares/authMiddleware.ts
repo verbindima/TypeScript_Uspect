@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import config from '../config/config'
+import config from '../../config/config'
 import { extractCookieFromRequest } from '../utilities/apiUtilities'
 import ApiError from '../utilities/api-error'
 
