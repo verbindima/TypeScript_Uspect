@@ -1,6 +1,3 @@
-import { isString } from "util"
-import { User } from "../entity/user.entity"
-
 interface itemList {
      item: string, 
      type: string,
@@ -60,7 +57,7 @@ const isBirthdayToday = (birthday:Date) => {
   }
 
   const smallestPrice = (total: itemList[]) => {
-    let arr = []
+    const arr = []
     for (const key in total) {
         if (total[key].type === 'Пицца') {
           arr.push(total[key].price / total[key].count)
