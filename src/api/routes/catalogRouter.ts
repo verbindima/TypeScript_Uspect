@@ -7,11 +7,16 @@ const { create, get, getOne, updateOne, deleteOne } = controllers
 
 const router = express.Router()
 
-router.get('/', authMiddleware(true), validator.get, get) 
-router.post('/', upload.single("picture"), authMiddleware(true), validator.create, create) 
+router.get('/', authMiddleware(true), validator.get, get)
+router.post(
+  '/',
+  upload.single('picture'),
+  authMiddleware(true),
+  validator.create,
+  create
+)
 router.get('/:id', validator.getDelOne, getOne)
-router.patch('/:id', authMiddleware(true), validator.update, updateOne) 
-router.delete('/:id', authMiddleware(true), validator.getDelOne, deleteOne) 
-
+router.patch('/:id', authMiddleware(true), validator.update, updateOne)
+router.delete('/:id', authMiddleware(true), validator.getDelOne, deleteOne)
 
 export default router

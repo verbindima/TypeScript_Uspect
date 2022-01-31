@@ -1,55 +1,60 @@
-import { User } from "entity/user.entity";
-import { ItemList } from "../entity/itemList.entity";
-import { Order } from "../entity/order.entity";
-import config from "../config/config";
-import nodemailer from 'nodemailer';
+import { User } from 'api/entity/user.entity'
+import { ItemList } from '../entity/itemList.entity'
+import config from '../../config/config'
+import nodemailer from 'nodemailer'
 
-interface fullOrder{
-    id: number
-    client: string,
-    pizzeria: string,
-    summ: number,
-    discount: number,
-    createdAt: Date,
-    itemList: Array<{
-        item: string, 
-        type: string, 
-        price: number, 
-        count: number, 
-        img: string
-    }>
+interface fullOrder {
+  id: number
+  client: string
+  pizzeria: string
+  summ: number
+  discount: number
+  createdAt: Date
+  itemList: Array<{
+    item: string
+    type: string
+    price: number
+    count: number
+    img: string
+  }>
 }
 
 class MailService {
-    transporter: any | undefined;
-    
-    constructor() {
-        if (config.SMTP_PORT){
-        this.transporter = nodemailer.createTransport({
-            host: config.HOST, 
-            port: parseInt(config.SMTP_PORT),
-            secure: false,
-            auth: {
-                user: config.USER,
-                pass: config.PASSWORD
-            }
-        })
+  transporter: any | undefined
+
+  constructor() {
+    if (config.SMTP_PORT) {
+      this.transporter = nodemailer.createTransport({
+        host: config.HOST,
+        port: parseInt(config.SMTP_PORT),
+        secure: false,
+        auth: {
+          user: config.USER,
+          pass: config.PASSWORD,
+        },
+      })
     }
+  }
+
+  async sendOrderMail(
+    to: string,
+    order: fullOrder,
+    itemList: Array<ItemList>,
+    user: User
+  ) {
+    let orderItemsStr = ''
+    for (const key in order.itemList) {
+      orderItemsStr =
+        orderItemsStr +
+        `<p><img src="${order.itemList[key].img}" width="189" height="255"> Товар: ${order.itemList[key].item} Количество: ${order.itemList[key].count} Цена: ${order.itemList[key].price} </p>`
     }
 
-    async sendOrderMail(to: string, order: fullOrder, itemList: Array<ItemList>, user: User ) {
-        let orderItemsStr = ""
-        for (let key in order.itemList) {
-            orderItemsStr = orderItemsStr + `<p><img src="${order.itemList[key].img}" width="189" height="255"> Товар: ${order.itemList[key].item} Количество: ${order.itemList[key].count} Цена: ${order.itemList[key].price} </p>` 
-        }
-       
-         await this.transporter.sendMail({
-            from: config.USER,
-            to,
-            subject: 'Горячий кусочек. Ваш заказ принят.',
-            text: '',
-            html:
-                `   <div>
+    await this.transporter.sendMail({
+      from: config.USER,
+      to,
+      subject: 'Горячий кусочек. Ваш заказ принят.',
+      text: '',
+      html: `   <div>
                         <h1>Горячий кусочек</h1>
                         <h2>Заказ размещен</h2>
                         <h3>Здравствуйте, ${user.name}! Мы получили ваш заказ.</h3>
@@ -62,9 +67,9 @@ class MailService {
                             ${orderItemsStr}</h4></p>
                     </div>   
                    
-                `
-        })
-    }
+                `,
+    })
+  }
 }
 
-export default new MailService();
+export default new MailService()
